@@ -11,6 +11,7 @@ DEFAULT_MODEL="claude-3-haiku-20240307"
 
 def classify_support_request(ticket_contents):
     # Define the prompt for the classification task
+    
     classification_prompt = f"""You will be acting as a customer support ticket classification system. Your task is to analyze customer support requests and output the appropriate classification intent for each request, along with your reasoning. 
 
         Here is the customer support request you need to classify:
@@ -78,7 +79,8 @@ def classify_support_request(ticket_contents):
         ],
         stream = False,
     )
-    return  message.content[0].text
+    reasing_and_intent = message.content[0].text
+    
 
 
 print(classify_support_request("Hello! Fuck you!"))

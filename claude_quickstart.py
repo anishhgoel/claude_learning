@@ -79,8 +79,15 @@ def classify_support_request(ticket_contents):
         ],
         stream = False,
     )
-    reasing_and_intent = message.content[0].text
+    reasoning_and_intent = message.content[0].text
+
+    reasoning_match = re.search(r"<reasoning>(.*?)</reasoning>", reasoning_and_intent, re.DOTALL)
+    reasoning = reasoning_match.group(1).strip() if reasoning_match else ""
+
+    intent_match = re.search(r"<intent>(.*?)</intent>", reasoning_and_intent, re.DOTALL)
+    intent = intent_match.group(1).strip() if intent_match else ""
+
+    return reasoning, intent
     
 
-
-print(classify_support_request("Hello! Fuck you!"))
+print(classify_support_request("Hello! I had high-speed fiber internet installed on Saturday and my installer, Kevin, was absolutely fantastic! Where can I send my positive review? Thanks for your help!"))

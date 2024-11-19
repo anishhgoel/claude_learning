@@ -9,7 +9,7 @@ api_key = os.getenv("ANTHROPIC_API_KEY")
 client = anthropic.Anthropic(api_key=api_key)
 DEFAULT_MODEL="claude-3-haiku-20240307"
 
-def classify_support_request(ticket_contents):
+def classify_support_request(ticket_contents, actual_intent):
     # Define the prompt for the classification task
     
     classification_prompt = f"""You will be acting as a customer support ticket classification system. Your task is to analyze customer support requests and output the appropriate classification intent for each request, along with your reasoning. 
@@ -79,6 +79,7 @@ def classify_support_request(ticket_contents):
         ],
         stream = False,
     )
+    
     reasoning_and_intent = message.content[0].text
 
     reasoning_match = re.search(r"<reasoning>(.*?)</reasoning>", reasoning_and_intent, re.DOTALL)
@@ -87,7 +88,9 @@ def classify_support_request(ticket_contents):
     intent_match = re.search(r"<intent>(.*?)</intent>", reasoning_and_intent, re.DOTALL)
     intent = intent_match.group(1).strip() if intent_match else ""
 
-    return reasoning, intent
+    correct = actual_intent.strip() == intent.strip()
+
+    return reasoning, intent, correct
     
 
-print(classify_support_request("Hello! I had high-speed fiber internet installed on Saturday and my installer, Kevin, was absolutely fantastic! Where can I send my positive review? Thanks for your help!"))
+print(classify_support_request("Hello! I had high-speed fiber internet installed on Saturday and my installer, Kevin, was absolutely fantastic! Where can I send my positive review? Thanks for your help!","Support, Feedback, Complaint" ))
